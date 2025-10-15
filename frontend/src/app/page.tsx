@@ -35,6 +35,15 @@ export default function Home() {
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
   const [error, setError] = useState("");
   const [downloading, setDownloading] = useState(false);
+  const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    // Clear error and success messages when URL changes
+    if (error || success) {
+      setError("");
+      setSuccess("");
+    }
+  }, [url]);
 
   const availableFormats = videoInfo?.formats.filter(format => format.format_type === formatType) || [];
 
@@ -122,7 +131,7 @@ export default function Home() {
       link.remove();
       window.URL.revokeObjectURL(downloadUrl);
 
-      setError("✅ Download completed successfully!");
+      setSuccess("✅ Download completed successfully!");
     } catch (err) {
       setError("❌ " + (err instanceof Error ? err.message : "Download failed"));
     } finally {
@@ -287,6 +296,19 @@ export default function Home() {
               </div>
             )}
 
+            {success && (
+              <div
+                className="p-4 rounded-xl border-2 text-center font-medium"
+                style={{
+                  backgroundColor: "#e6ffe6",
+                  borderColor: "#99ff99",
+                  color: "#00cc00"
+                }}
+              >
+                {success}
+              </div>
+            )}
+
             <button
               onClick={downloadVideo}
               disabled={!videoInfo}
@@ -312,7 +334,7 @@ export default function Home() {
         </div>
 
         <div className="text-center mt-6 text-sm opacity-60" style={{ color: "var(--foreground)" }}>
-          Built with ❤️ for easy YouTube downloads
+          With ❤️ by horvitz
         </div>
       </div>
     </div>
