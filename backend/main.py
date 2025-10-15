@@ -12,7 +12,7 @@ app = FastAPI(title="Dvorfs Downloader Backend", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_origins=["http://localhost:3000", "http://localhost:3030", "http://127.0.0.1:3000", "*"],  # Frontend URLs and docker
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -153,11 +153,19 @@ async def download_video_endpoint(request: DownloadRequest, background_tasks: Ba
         # Add cleanup task
         background_tasks.add_task(os.remove, file_path)
 
-        return FileResponse(
+        # Clean filename by replacing problematic characters
+        title = info['title'].replace('/', '_').replace('"', '').replace('\\', '')
+
+        response = FileResponse(
             path=file_path,
-            filename=f"{info['title'].replace('/', '_').replace('\"', '')}.{ext}",
+            filename=f"{title}.{ext}",
             media_type=f"{'video' if request.format_type == 'video' else 'audio'}/{ext}"
         )
+
+        # Add CORS headers for file downloads
+        response.headers["Access-Control-Allow-Origin"] = "*"
+
+        return response
 
     except Exception as e:
         if os.path.exists(file_path):
