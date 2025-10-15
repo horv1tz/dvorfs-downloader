@@ -26,13 +26,20 @@ interface VideoInfo {
   formats: VideoFormat[];
 }
 
+const DEBUG_VAR: Record<string, unknown> = {};
+if (typeof window !== 'undefined') {
+  // Для отладки: добавляем доступность переменной в window
+  (DEBUG_VAR as Record<string, unknown>).API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND || "http://localhost:8000";
+  (window as typeof window & { API_BASE_URL?: string }).API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND || "http://localhost:8000";
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND || "http://localhost:8000";
 const DOWNLOAD_URL = API_BASE_URL;
 
 export default function Home() {
   const t = useTranslations();
 
-  const [url, setUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+  const [url, setUrl] = useState("");
   const [selectedFormat, setSelectedFormat] = useState<string>("");
   const [formatType, setFormatType] = useState<string>("video");
   const [isLoading, setIsLoading] = useState(false);
