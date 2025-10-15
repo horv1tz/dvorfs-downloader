@@ -374,7 +374,7 @@ export default function Home() {
             color: "var(--primary)"
           }}
         >
-          Техническая поддержка
+          {t('technicalSupport')}
           <div
             className="absolute top-full right-4 mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent"
             style={{ borderTopColor: "var(--foreground)" }}
