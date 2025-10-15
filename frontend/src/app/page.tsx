@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from 'next-intl';
 // import * as anime from "animejs";
 
 interface VideoFormat {
@@ -28,6 +29,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND || "http://localhos
 const DOWNLOAD_URL = process.env.NEXT_PUBLIC_API_URL_DOWNLOAD || "http://localhost:8000";
 
 export default function Home() {
+  const t = useTranslations();
+
   const [url, setUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   const [selectedFormat, setSelectedFormat] = useState<string>("");
   const [formatType, setFormatType] = useState<string>("video");
@@ -86,7 +89,17 @@ export default function Home() {
         setSelectedFormat(formats[0].format_id);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      if (err instanceof Error) {
+        if (err.message === "Failed to fetch video information") {
+          setError(t('failedToFetchVideoInfo'));
+        } else if (err.message === "Download failed") {
+          setError(t('downloadFailed'));
+        } else {
+          setError(err.message);
+        }
+      } else {
+        setError(t('anErrorOccurred'));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -131,7 +144,7 @@ export default function Home() {
       link.remove();
       window.URL.revokeObjectURL(downloadUrl);
 
-      setSuccess("✅ Download completed successfully!");
+      setSuccess(t('downloadCompleted'));
     } catch (err) {
       setError("❌ " + (err instanceof Error ? err.message : "Download failed"));
     } finally {
@@ -147,10 +160,10 @@ export default function Home() {
       <div className="w-full max-w-lg mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2" style={{ color: "var(--foreground)" }}>
-            DVORFS DOWNLOADER
+            {t('title')}
           </h1>
           <p className="text-sm opacity-70" style={{ color: "var(--foreground)" }}>
-            Download YouTube videos effortlessly
+            {t('subtitle')}
           </p>
         </div>
 
@@ -165,7 +178,7 @@ export default function Home() {
           <div className="space-y-6">
             <div>
               <label htmlFor="url" className="block text-sm font-semibold mb-3" style={{ color: "var(--foreground)" }}>
-                YouTube URL
+                {t('youtubeUrl')}
               </label>
               <input
                 id="url"
@@ -173,7 +186,7 @@ export default function Home() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 className="w-full p-4 border-2 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-200"
-                placeholder="https://www.youtube.com/watch?v=..."
+                placeholder={t('urlPlaceholder')}
                 style={{
                   backgroundColor: "var(--primary)",
                   color: "var(--foreground)",
@@ -199,16 +212,16 @@ export default function Home() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Loading...
+                  {t('loading')}
                 </span>
               ) : (
-                "Get Video Info"
+                t('getVideoInfo')
               )}
             </button>
 
             <div>
               <label htmlFor="format" className="block text-sm font-semibold mb-3" style={{ color: "var(--foreground)" }}>
-                Format Type
+                {t('formatType')}
               </label>
               <select
                 id="format"
@@ -222,15 +235,15 @@ export default function Home() {
                   fontFamily: "Arial, sans-serif"
                 }}
               >
-                <option value="video">🎥 Video (MP4)</option>
-                <option value="audio">🎵 Audio (M4A/MP3)</option>
+                <option value="video">{t('videoFormat')}</option>
+                <option value="audio">{t('audioFormat')}</option>
               </select>
             </div>
 
             {availableFormats.length > 0 && (
               <div>
                 <label htmlFor="quality-select" className="block text-sm font-semibold mb-3" style={{ color: "var(--foreground)" }}>
-                  Quality Options
+                  {t('qualityOptions')}
                 </label>
                 <select
                   id="quality-select"
@@ -247,8 +260,14 @@ export default function Home() {
                   {availableFormats.map((format) => (
                     <option key={format.format_id} value={format.format_id}>
                       {format.format_type === "audio"
-                        ? `🎵 ${format.format_note} (${format.ext.toUpperCase()})`
-                        : `🎥 ${format.quality}p ${format.resolution ? `• ${format.resolution}` : ""} • ${(format.filesize / 1048576).toFixed(1)} MB • ${format.ext.toUpperCase()}${format.acodec === "none" ? " 🔇 (No Audio)" : ""}`
+                        ? t('audioQuality', { formatNote: format.format_note, ext: format.ext.toUpperCase() })
+                        : t('videoQuality', {
+                            quality: format.quality,
+                            resolution: format.resolution || "",
+                            size: (format.filesize / 1048576).toFixed(1),
+                            ext: format.ext.toUpperCase(),
+                            muteIndicator: format.acodec === "none" ? t('muteIndicator') : ""
+                          })
                       }
                     </option>
                   ))}
@@ -267,9 +286,12 @@ export default function Home() {
               >
                 <h3 className="font-bold text-lg mb-3 line-clamp-2">{videoInfo.title}</h3>
                 <div className="text-sm space-y-2">
-                  <p>👤 <span className="font-medium">{videoInfo.uploader}</span></p>
-                  <p>👁️ <span className="font-medium">{videoInfo.view_count?.toLocaleString()}</span> views</p>
-                  <p>⏱️ <span className="font-medium">{Math.floor(videoInfo.duration / 60)}:{(videoInfo.duration % 60).toString().padStart(2, '0')}</span> min</p>
+                  <p>{t('uploader', { uploader: videoInfo.uploader })}</p>
+                  <p>{t('views', { views: videoInfo.view_count?.toLocaleString() || '0' })}</p>
+                  <p>{t('duration', { 
+                    minutes: Math.floor(videoInfo.duration / 60), 
+                    seconds: (videoInfo.duration % 60).toString().padStart(2, '0') 
+                  })}</p>
                 </div>
                 {videoInfo.thumbnail && (
                   <div className="mt-4">
@@ -325,16 +347,16 @@ export default function Home() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Downloading...
+                  {t('downloading')}
                 </span>
-              ) : videoInfo ? "⬇️ Download Now" : "Select Video to Download"
+              ) : videoInfo ? t('downloadNow') : t('selectVideoToDownload')
               }
             </button>
           </div>
         </div>
 
         <div className="text-center mt-6 text-sm opacity-60" style={{ color: "var(--foreground)" }}>
-          With ❤️ by horvitz
+          {t('withLove')}
         </div>
       </div>
 
