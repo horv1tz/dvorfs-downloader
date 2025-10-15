@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND;
 
 // Function to fetch video information
 export async function fetchVideoInfo(url) {
-  const response = await fetch(`${API_BASE_URL}/video/info`, {
+  const response = await fetch(`${API_BASE_URL}/api/video/info`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export async function fetchVideoInfo(url) {
 
 // Function to download video/audio
 export async function downloadVideo(url, quality, formatType) {
-  const response = await fetch(`${API_BASE_URL}/download`, {
+  const response = await fetch(`${API_BASE_URL}/api/download`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -164,17 +164,17 @@ async def stream_file_response(file_path: str, filename: str, media_type: str, b
         }
     )
 
-@app.get("/")
+@app.get("/api")
 async def root():
     return {"message": "Welcome to Dvorfs Downloader Backend"}
 
-@app.post("/video/info")
+@app.post("/api/video/info")
 async def get_video_info(request: VideoInfoRequest):
     """Get video information and available formats"""
     info = extract_video_info(request.url)
     return info
 
-@app.post("/download")
+@app.post("/api/download")
 async def download_video_endpoint(request: DownloadRequest, background_tasks: BackgroundTasks):
     """Optimized download video/audio file with streaming response"""
     info = extract_video_info(request.url)
