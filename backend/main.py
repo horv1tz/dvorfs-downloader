@@ -17,7 +17,7 @@ app = FastAPI(title="Dvorfs Downloader Backend", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3030", "http://127.0.0.1:3000", "*"],  # Frontend URLs and docker
+    allow_origins=["http://localhost:3000", "http://localhost:3030", "http://127.0.0.1:3000", "http://frontend:3000", "*"],  # Frontend URLs and docker
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
