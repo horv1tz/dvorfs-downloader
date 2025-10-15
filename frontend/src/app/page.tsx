@@ -26,15 +26,8 @@ interface VideoInfo {
   formats: VideoFormat[];
 }
 
-const DEBUG_VAR: Record<string, unknown> = {};
-if (typeof window !== 'undefined') {
-  // Для отладки: добавляем доступность переменной в window
-  (DEBUG_VAR as Record<string, unknown>).API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND || "http://localhost:8000";
-  (window as typeof window & { API_BASE_URL?: string }).API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND || "http://localhost:8000";
-}
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND || "http://localhost:8000";
-const DOWNLOAD_URL = API_BASE_URL;
+// Import API functions
+import { fetchVideoInfo as fetchVideoInfoApi, downloadVideo as downloadVideoApi } from '../api.js';
 
 export default function Home() {
   const t = useTranslations();
@@ -76,19 +69,7 @@ export default function Home() {
     setSelectedFormat("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/video/info`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch video information");
-      }
-
-      const data = await response.json();
+      const data = await fetchVideoInfoApi(url);
       setVideoInfo(data);
 
       // Auto-select best available format
@@ -123,24 +104,9 @@ export default function Home() {
       const selectedFormatData = availableFormats.find(format => format.format_id === selectedFormat);
       if (!selectedFormatData) return;
 
-      const response = await fetch(`${DOWNLOAD_URL}/download`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          url,
-          quality: selectedFormatData.quality.toString(),
-          format_type: formatType,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Download failed");
-      }
+      const blob = await downloadVideoApi(url, selectedFormatData.quality.toString(), formatType);
 
       // Create download link
-      const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;

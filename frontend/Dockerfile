@@ -3,6 +3,10 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Accept build argument for API URL
+ARG NEXT_PUBLIC_API_URL_BACKEND
+ENV NEXT_PUBLIC_API_URL_BACKEND=$NEXT_PUBLIC_API_URL_BACKEND
+
 COPY package*.json ./
 RUN npm ci
 
