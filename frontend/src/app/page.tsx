@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from 'next-intl';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 // import * as anime from "animejs";
 
 interface VideoFormat {
@@ -154,9 +155,14 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
+      className="min-h-screen flex items-center justify-center p-4 relative"
       style={{ backgroundColor: "var(--background)", color: "var(--foreground)" }}
     >
+      {/* Language Switcher - Top Right */}
+      <div className="absolute top-4 right-4 z-30">
+        <LanguageSwitcher />
+      </div>
+
       <div className="w-full max-w-lg mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2" style={{ color: "var(--foreground)" }}>
