@@ -8,7 +8,6 @@ RUN npm ci
 
 COPY . .
 
-# Environment variables will be set at build time if needed
 RUN npm run build
 
 # Production stage

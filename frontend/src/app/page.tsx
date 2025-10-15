@@ -27,7 +27,7 @@ interface VideoInfo {
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL_BACKEND || "http://localhost:8000";
-const DOWNLOAD_URL = process.env.NEXT_PUBLIC_API_URL_DOWNLOAD || "http://localhost:8000";
+const DOWNLOAD_URL = API_BASE_URL;
 
 export default function Home() {
   const t = useTranslations();

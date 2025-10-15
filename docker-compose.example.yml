@@ -18,4 +18,3 @@ services:
       - backend
     environment:
       - NEXT_PUBLIC_API_URL_BACKEND=http://backend:8000
-      - NEXT_PUBLIC_API_URL_DOWNLOAD=http://backend:8000
