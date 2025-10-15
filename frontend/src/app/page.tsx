@@ -337,6 +337,49 @@ export default function Home() {
           With ❤️ by horvitz
         </div>
       </div>
+
+      {/* Support Button - Fixed position bottom right */}
+      <a
+        href="https://t.me/DvorfsSupport"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 group"
+        title="Technical Support"
+      >
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 transform hover:scale-110 hover:shadow-3xl"
+          style={{
+            backgroundColor: "var(--secondary)",
+            color: "var(--primary)",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.3)"
+          }}
+        >
+          <svg
+            width="24"
+            height="24"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            className="transition-transform duration-300 group-hover:rotate-12"
+          >
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-.962 4.093-1.362 5.426-.168.568-.476.701-.76.711-.901.04-1.59-.614-2.456-1.205-1.071-.78-1.674-1.265-2.71-2.029-.627-.459-.224-.713.137-.962.34-.233.85-.49.85-.49s.285-.108.444-.207c.07-.05.131-.116.177-.189.531-.878-.5-1.518-.5-1.518s-.66-.407-2.058-.407c-1.397 0-1.93.407-1.93.407s-.84.641-.5 1.518c.045.073.107.139.177.189.159.099.444.207.444.207s.51.257.85.49c.361.23.404.695.137.962-.627.459-2.71 2.029-2.71 2.029s-.901.796-2.456 1.205c-.284-.01-.592-.143-.76-.711-.4-1.333-1.182-4.709-1.362-5.426-.11-.448.138-.808.651-.819.493-.01 1.07.582 1.07.582s.387.146.429.146.135-.062.335-.146.492-.146.492-.146.577-.594 1.07-.582c.513.011.761.371.651.819z"/>
+          </svg>
+        </div>
+
+        {/* Tooltip */}
+        <div
+          className="absolute bottom-full right-0 mb-2 px-3 py-1 rounded-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap"
+          style={{
+            backgroundColor: "var(--foreground)",
+            color: "var(--primary)"
+          }}
+        >
+          Техническая поддержка
+          <div
+            className="absolute top-full right-4 mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent"
+            style={{ borderTopColor: "var(--foreground)" }}
+          ></div>
+        </div>
+      </a>
     </div>
   );
 }
