@@ -248,7 +248,7 @@ export default function Home() {
                     <option key={format.format_id} value={format.format_id}>
                       {format.format_type === "audio"
                         ? `🎵 ${format.format_note} (${format.ext.toUpperCase()})`
-                        : `🎥 ${format.quality}p ${format.resolution ? `• ${format.resolution}` : ""} • ${(format.filesize / 1048576).toFixed(1)} MB • ${format.ext.toUpperCase()}`
+                        : `🎥 ${format.quality}p ${format.resolution ? `• ${format.resolution}` : ""} • ${(format.filesize / 1048576).toFixed(1)} MB • ${format.ext.toUpperCase()}${format.acodec === "none" ? " 🔇 (No Audio)" : ""}`
                       }
                     </option>
                   ))}
